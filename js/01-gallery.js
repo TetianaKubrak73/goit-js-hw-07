@@ -42,6 +42,7 @@ function openModal(imageURL) {
   modal.element().querySelector('img').src = imageURL;
   modal.show();
 }
+
 window.addEventListener('keydown', onKeyPress);
 
 function onKeyPress(event) {
