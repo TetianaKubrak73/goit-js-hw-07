@@ -3,27 +3,17 @@ import { galleryItems } from './gallery-items.js';
 const galleryList = document.querySelector('.gallery');
 
 function createGalleryItem(item) {
-  const listItem = document.createElement('li');
-  listItem.classList.add('gallery__item');
-
-  const link = document.createElement('a');
-  link.classList.add('gallery__link');
-  link.href = item.original;
-
-  const image = document.createElement('img');
-  image.classList.add('gallery__image');
-  image.src = item.preview;
-  image.alt = item.description;
-
-  link.appendChild(image);
-  listItem.appendChild(link);
-
-  return listItem;
+  return `
+    <li class="gallery__item">
+      <a class="gallery__link" href="${item.original}">
+        <img class="gallery__image" src="${item.preview}" alt="${item.description}" />
+      </a>
+    </li>
+  `;
 }
 
-const galleryElements = galleryItems.map(createGalleryItem);
-galleryList.append(...galleryElements);
-
+const galleryElements = galleryItems.map(createGalleryItem).join('');
+galleryList.insertAdjacentHTML('beforeend', galleryElements);
 
 galleryList.addEventListener('click', onGalleryItemClick);
 
@@ -35,17 +25,30 @@ function onGalleryItemClick(event) {
   openModal(originalImageURL, event.target.alt);
 }
 
+let lightbox = null;
+
 function openModal(imageURL, imageAlt) {
-  const lightbox = new SimpleLightbox(`.${galleryList.className} a`, {
+  lightbox = new SimpleLightbox(`.${galleryList.className} a`, {
     captionsData: 'alt',
     captionDelay: 250,
   });
-  lightbox.load(imageURL, imageAlt);
+
+  lightbox.on('show.simplelightbox', () => {
+    document.addEventListener('keydown', onKeyPress);
+  });
+
+  lightbox.on('close.simplelightbox', () => {
+    document.removeEventListener('keydown', onKeyPress);
+  });
+
+      lightbox.fromURL(imageURL);
+    
 }
 
-
-
-
-
+function onKeyPress(event) {
+  if (event.key === 'Escape') {
+    lightbox.close();
+  }
+}
 
 
