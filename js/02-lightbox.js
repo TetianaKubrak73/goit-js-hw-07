@@ -15,40 +15,10 @@ function createGalleryItem(item) {
 const galleryElements = galleryItems.map(createGalleryItem).join('');
 galleryList.insertAdjacentHTML('beforeend', galleryElements);
 
-galleryList.addEventListener('click', onGalleryItemClick);
-
-function onGalleryItemClick(event) {
-  event.preventDefault();
-  if (event.target.nodeName !== 'IMG') return;
-
-  const originalImageURL = event.target.parentElement.getAttribute('href');
-  openModal(originalImageURL, event.target.alt);
-}
-
-let lightbox = null;
-
-function openModal(imageURL, imageAlt) {
-  lightbox = new SimpleLightbox(`.${galleryList.className} a`, {
+    lightbox = new SimpleLightbox(`.gallery a`, {
     captionsData: 'alt',
     captionDelay: 250,
   });
 
-  lightbox.on('show.simplelightbox', () => {
-    document.addEventListener('keydown', onKeyPress);
-  });
-
-  lightbox.on('close.simplelightbox', () => {
-    document.removeEventListener('keydown', onKeyPress);
-  });
-
-      lightbox.fromURL(imageURL);
-    
-}
-
-function onKeyPress(event) {
-  if (event.key === 'Escape') {
-    lightbox.close();
-  }
-}
 
 
